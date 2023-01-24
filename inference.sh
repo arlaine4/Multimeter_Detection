@@ -1,6 +1,17 @@
 #!/bin/bash
 
-base64 $1 | curl -d @- \
-"https://detect.roboflow.com/multimetre/1?api_key=7DoC4QAppn9U3laTWH5f" > last_detection.json
+nb_args=$#
+if [[$nb_args == 0]]
+then
+	echo "Missing image path"
+	exit 1
+fi
 
-python3 plot_inference_bb.py $1
+video_path=$1
+
+# Making prediction
+base64 $video_path | curl -d @- \
+"https://detect.roboflow.com/multimetre/1?api_key=7DoC4QAppn9U3laTWH5f" > output/last_detection.json
+
+# Plotting inference bb
+python3 srcs/plot_inference_bb.py $video_path
